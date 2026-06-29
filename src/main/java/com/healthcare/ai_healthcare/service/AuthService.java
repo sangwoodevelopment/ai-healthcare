@@ -1,16 +1,17 @@
 package com.healthcare.ai_healthcare.service;
 
+import com.healthcare.ai_healthcare.config.JwtTokenProvider;
 import com.healthcare.ai_healthcare.dto.LoginRequest;
 import com.healthcare.ai_healthcare.dto.LoginResponse;
 import com.healthcare.ai_healthcare.dto.SignupRequest;
 import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.exception.BusinessException;
+import com.healthcare.ai_healthcare.exception.ErrorCode;
 import com.healthcare.ai_healthcare.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.healthcare.ai_healthcare.exception.BusinessException;
-import com.healthcare.ai_healthcare.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public void signup(SignupRequest request) {
@@ -36,9 +38,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
-
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
@@ -46,9 +46,8 @@ public class AuthService {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD);
         }
 
-        return new LoginResponse(
-                user.getEmail(),
-                user.getName()
-        );
+        String accessToken = jwtTokenProvider.generateToken(user.getEmail());
+
+        return new LoginResponse(accessToken, null);
     }
 }
