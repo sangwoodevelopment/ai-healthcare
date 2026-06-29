@@ -6,6 +6,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import com.healthcare.ai_healthcare.dto.LoginRequest;
+import com.healthcare.ai_healthcare.dto.LoginResponse;
+import com.healthcare.ai_healthcare.common.response.ApiResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,5 +21,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public void signup(@Valid @RequestBody SignupRequest request) {
         authService.signup(request);
+    }
+    @PostMapping("/login")
+    public ApiResponse<LoginResponse> login(
+            @Valid @RequestBody LoginRequest request
+    ) {
+        LoginResponse response = authService.login(request);
+        return ApiResponse.success("로그인 성공", response);
     }
 }

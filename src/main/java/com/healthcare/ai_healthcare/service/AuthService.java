@@ -1,5 +1,7 @@
 package com.healthcare.ai_healthcare.service;
 
+import com.healthcare.ai_healthcare.dto.LoginRequest;
+import com.healthcare.ai_healthcare.dto.LoginResponse;
 import com.healthcare.ai_healthcare.dto.SignupRequest;
 import com.healthcare.ai_healthcare.entity.User;
 import com.healthcare.ai_healthcare.repository.UserRepository;
@@ -32,5 +34,21 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.INVALID_PASSWORD);
+        }
+
+        return new LoginResponse(
+                user.getEmail(),
+                user.getName()
+        );
     }
 }
