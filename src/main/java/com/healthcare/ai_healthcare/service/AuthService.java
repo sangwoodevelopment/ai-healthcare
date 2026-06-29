@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.healthcare.ai_healthcare.exception.BusinessException;
+import com.healthcare.ai_healthcare.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +21,7 @@ public class AuthService {
     @Transactional
     public void signup(SignupRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new BusinessException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         User user = User.builder()
