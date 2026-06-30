@@ -40,6 +40,9 @@ public class Hospital {
     @Column(length = 50)
     private String sigungu;
 
+    @Column(nullable = false, unique = true, length = 150)
+    private String ykiho;
+
     @Builder
     public Hospital(
             String name,
@@ -47,7 +50,8 @@ public class Hospital {
             String phoneNumber,
             String department,
             String sido,
-            String sigungu
+            String sigungu,
+            String ykiho
     ) {
         this.name = name;
         this.address = address;
@@ -55,5 +59,6 @@ public class Hospital {
         this.department = department;
         this.sido = sido;
         this.sigungu = sigungu;
+        this.ykiho = ykiho;
     }
 }

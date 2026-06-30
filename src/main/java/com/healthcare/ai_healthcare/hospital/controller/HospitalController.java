@@ -2,6 +2,7 @@ package com.healthcare.ai_healthcare.hospital.controller;
 
 import com.healthcare.ai_healthcare.common.response.ApiResponse;
 import com.healthcare.ai_healthcare.hospital.client.HiraHospitalClient;
+import com.healthcare.ai_healthcare.hospital.dto.HiraHospitalResponse;
 import com.healthcare.ai_healthcare.hospital.dto.HospitalResponse;
 import com.healthcare.ai_healthcare.hospital.service.HospitalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,21 +23,32 @@ public class HospitalController {
     private final HospitalService hospitalService;
     private final HiraHospitalClient hiraHospitalClient;
 
-    @Operation(summary = "병원 목록 조회", description = "병원 목록을 조회합니다. keyword 또는 department 조건으로 검색할 수 있습니다.")
+    @Operation(summary = "병원 목록 조회", description = "병원명, 주소, 진료과 키워드로 병원을 검색합니다.")
     @GetMapping
     public ApiResponse<List<HospitalResponse>> getHospitals(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String department
+            @RequestParam(required = false) String keyword
     ) {
-        List<HospitalResponse> response = hospitalService.getHospitals(keyword, department);
+        List<HospitalResponse> response = hospitalService.getHospitals(keyword);
 
         return ApiResponse.success("병원 목록 조회 성공", response);
     }
 
-    @Operation(summary = "HIRA 병원 API 테스트", description = "HIRA 병원정보서비스 응답을 원문 문자열로 확인합니다.")
+    @Operation(summary = "HIRA 병원 API 테스트", description = "HIRA 병원정보서비스 응답을 확인합니다.")
     @GetMapping("/hira/test")
-    public ApiResponse<String> testHiraApi() {
-        String response = hiraHospitalClient.getHospitalList(1, 10);
+    public ApiResponse<HiraHospitalResponse> testHiraApi() {
+        HiraHospitalResponse response = hiraHospitalClient.getHospitalList(1, 10);
         return ApiResponse.success("HIRA API 호출 성공", response);
+    }
+
+    @Operation(summary = "HIRA 병원 저장")
+    @PostMapping("/sync")
+    public ApiResponse<Void> syncHospitals() {
+
+        HiraHospitalResponse response =
+                hiraHospitalClient.getHospitalList(1, 100);
+
+        hospitalService.saveHospitals(response);
+
+        return ApiResponse.success("병원 저장 완료");
     }
 }
