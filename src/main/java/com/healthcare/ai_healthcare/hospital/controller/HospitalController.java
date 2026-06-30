@@ -1,6 +1,7 @@
 package com.healthcare.ai_healthcare.hospital.controller;
 
 import com.healthcare.ai_healthcare.common.response.ApiResponse;
+import com.healthcare.ai_healthcare.hospital.client.HiraHospitalClient;
 import com.healthcare.ai_healthcare.hospital.dto.HospitalResponse;
 import com.healthcare.ai_healthcare.hospital.service.HospitalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,7 @@ import java.util.List;
 public class HospitalController {
 
     private final HospitalService hospitalService;
+    private final HiraHospitalClient hiraHospitalClient;
 
     @Operation(summary = "병원 목록 조회", description = "병원 목록을 조회합니다. keyword 또는 department 조건으로 검색할 수 있습니다.")
     @GetMapping
@@ -29,5 +31,12 @@ public class HospitalController {
         List<HospitalResponse> response = hospitalService.getHospitals(keyword, department);
 
         return ApiResponse.success("병원 목록 조회 성공", response);
+    }
+
+    @Operation(summary = "HIRA 병원 API 테스트", description = "HIRA 병원정보서비스 응답을 원문 문자열로 확인합니다.")
+    @GetMapping("/hira/test")
+    public ApiResponse<String> testHiraApi() {
+        String response = hiraHospitalClient.getHospitalList(1, 10);
+        return ApiResponse.success("HIRA API 호출 성공", response);
     }
 }
