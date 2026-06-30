@@ -55,4 +55,15 @@ public class HospitalController {
 
         return ApiResponse.success("병원 저장 완료");
     }
+
+    @Operation(summary = "병원 상세 조회")
+    @GetMapping("/{id}")
+    public ApiResponse<HospitalResponse> getHospital(
+            @PathVariable Long id
+    ){
+        return ApiResponse.success(
+                "병원 조회 성공",
+                hospitalService.getHospital(id)
+        );
+    }
 }

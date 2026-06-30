@@ -19,4 +19,5 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     boolean existsByYkiho(String ykiho);
 
     Optional<Hospital> findByYkiho(String ykiho);
+    Optional<Hospital> findById(Long id);
 }

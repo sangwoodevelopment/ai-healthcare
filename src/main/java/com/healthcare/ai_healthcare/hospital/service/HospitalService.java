@@ -1,5 +1,7 @@
 package com.healthcare.ai_healthcare.hospital.service;
 
+import com.healthcare.ai_healthcare.exception.BusinessException;
+import com.healthcare.ai_healthcare.exception.ErrorCode;
 import com.healthcare.ai_healthcare.hospital.dto.HiraHospitalResponse;
 import com.healthcare.ai_healthcare.hospital.dto.HospitalResponse;
 import com.healthcare.ai_healthcare.hospital.entity.Hospital;
@@ -59,5 +61,12 @@ public class HospitalService {
 
             hospitalRepository.save(hospital);
         }
+    }
+
+    public HospitalResponse getHospital(Long id){
+        Hospital hospital = hospitalRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.HOSPITAL_NOT_FOUND));
+
+        return HospitalResponse.from(hospital);
     }
 }
