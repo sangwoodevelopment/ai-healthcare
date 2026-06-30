@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -17,23 +19,20 @@ public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
 
-    public List<HospitalResponse> getHospitals(String keyword) {
+    public Page<HospitalResponse> getHospitals(String keyword,Pageable pageable) {
         if (keyword != null && !keyword.isBlank()) {
             return hospitalRepository
                     .findByNameContainingOrAddressContainingOrDepartmentContaining(
                             keyword,
                             keyword,
-                            keyword
+                            keyword,
+                            pageable
                     )
-                    .stream()
-                    .map(HospitalResponse::from)
-                    .toList();
+                    .map(HospitalResponse::from);
         }
 
-        return hospitalRepository.findAll()
-                .stream()
-                .map(HospitalResponse::from)
-                .toList();
+        return hospitalRepository.findAll(pageable)
+                .map(HospitalResponse::from);
     }
 
     @Transactional

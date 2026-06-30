@@ -9,9 +9,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Hospital", description = "병원 API")
@@ -25,10 +26,13 @@ public class HospitalController {
 
     @Operation(summary = "병원 목록 조회", description = "병원명, 주소, 진료과 키워드로 병원을 검색합니다.")
     @GetMapping
-    public ApiResponse<List<HospitalResponse>> getHospitals(
-            @RequestParam(required = false) String keyword
+    public ApiResponse<Page<HospitalResponse>> getHospitals(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
     ) {
-        List<HospitalResponse> response = hospitalService.getHospitals(keyword);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<HospitalResponse> response = hospitalService.getHospitals(keyword,pageable);
 
         return ApiResponse.success("병원 목록 조회 성공", response);
     }
