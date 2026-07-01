@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface HospitalRepository extends JpaRepository<Hospital, Long> {
@@ -20,4 +21,5 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
 
     Optional<Hospital> findByYkiho(String ykiho);
     Optional<Hospital> findById(Long id);
+    List<Hospital> findByYkihoIn(List<String> ykihos);
 }

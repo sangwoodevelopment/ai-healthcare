@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -40,31 +42,36 @@ public class HospitalService {
 
     @Transactional
     public int saveHospitals(HiraHospitalResponse response) {
-        int savedCount = 0;
-
-        for (HiraHospitalResponse.Item item : response.getResponse()
+        List<HiraHospitalResponse.Item> items = response.getResponse()
                 .getBody()
                 .getItems()
-                .getItem()) {
+                .getItem();
 
-            if (hospitalRepository.existsByYkiho(item.getYkiho())) {
-                continue;
-            }
+        List<String> ykihos = items.stream()
+                .map(HiraHospitalResponse.Item::getYkiho)
+                .toList();
 
-            Hospital hospital = Hospital.builder()
-                    .ykiho(item.getYkiho())
-                    .name(item.getName())
-                    .address(item.getAddress())
-                    .phoneNumber(item.getPhoneNumber())
-                    .department(item.getDepartment())
-                    .sido(item.getSido())
-                    .sigungu(item.getSigungu())
-                    .build();
+        List<String> existingYkihos = hospitalRepository.findByYkihoIn(ykihos)
+                .stream()
+                .map(Hospital::getYkiho)
+                .toList();
 
-            hospitalRepository.save(hospital);
-            savedCount++;
-        }
-        return savedCount;
+        List<Hospital> hospitals = items.stream()
+                .filter(item -> !existingYkihos.contains(item.getYkiho()))
+                .map(item -> Hospital.builder()
+                        .ykiho(item.getYkiho())
+                        .name(item.getName())
+                        .address(item.getAddress())
+                        .phoneNumber(item.getPhoneNumber())
+                        .department(item.getDepartment())
+                        .sido(item.getSido())
+                        .sigungu(item.getSigungu())
+                        .build())
+                .toList();
+
+        hospitalRepository.saveAll(hospitals);
+
+        return hospitals.size();
     }
 
     public HospitalResponse getHospital(Long id){
