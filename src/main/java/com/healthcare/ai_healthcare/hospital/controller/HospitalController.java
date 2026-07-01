@@ -44,16 +44,12 @@ public class HospitalController {
         return ApiResponse.success("HIRA API 호출 성공", response);
     }
 
-    @Operation(summary = "HIRA 병원 저장")
+    @Operation(summary = "HIRA 병원 데이터 전체 동기화")
     @PostMapping("/sync")
-    public ApiResponse<Void> syncHospitals() {
+    public ApiResponse<Integer> syncHospitals() {
+        int savedCount = hospitalService.syncAllHospitals();
 
-        HiraHospitalResponse response =
-                hiraHospitalClient.getHospitalList(1, 100);
-
-        hospitalService.saveHospitals(response);
-
-        return ApiResponse.success("병원 저장 완료");
+        return ApiResponse.success("병원 동기화 완료",savedCount);
     }
 
     @Operation(summary = "병원 상세 조회")

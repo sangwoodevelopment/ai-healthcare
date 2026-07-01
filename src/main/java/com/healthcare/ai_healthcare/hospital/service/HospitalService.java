@@ -2,6 +2,7 @@ package com.healthcare.ai_healthcare.hospital.service;
 
 import com.healthcare.ai_healthcare.exception.BusinessException;
 import com.healthcare.ai_healthcare.exception.ErrorCode;
+import com.healthcare.ai_healthcare.hospital.client.HiraHospitalClient;
 import com.healthcare.ai_healthcare.hospital.dto.HiraHospitalResponse;
 import com.healthcare.ai_healthcare.hospital.dto.HospitalResponse;
 import com.healthcare.ai_healthcare.hospital.entity.Hospital;
@@ -10,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 public class HospitalService {
 
     private final HospitalRepository hospitalRepository;
+    private final HiraHospitalClient hiraHospitalClient;
 
     public Page<HospitalResponse> getHospitals(String keyword,Pageable pageable) {
         if (keyword != null && !keyword.isBlank()) {
@@ -38,7 +39,8 @@ public class HospitalService {
     }
 
     @Transactional
-    public void saveHospitals(HiraHospitalResponse response) {
+    public int saveHospitals(HiraHospitalResponse response) {
+        int savedCount = 0;
 
         for (HiraHospitalResponse.Item item : response.getResponse()
                 .getBody()
@@ -60,7 +62,9 @@ public class HospitalService {
                     .build();
 
             hospitalRepository.save(hospital);
+            savedCount++;
         }
+        return savedCount;
     }
 
     public HospitalResponse getHospital(Long id){
@@ -68,5 +72,34 @@ public class HospitalService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.HOSPITAL_NOT_FOUND));
 
         return HospitalResponse.from(hospital);
+    }
+
+    @Transactional
+    public int syncAllHospitals() {
+        int pageNo = 1;
+        int numOfRows = 100;
+        int savedCount = 0;
+
+        HiraHospitalResponse firstResponse =
+                hiraHospitalClient.getHospitalList(pageNo, numOfRows);
+
+        int totalCount = firstResponse.getResponse().getBody().getTotalCount();
+        int totalPages = (int) Math.ceil((double) totalCount / numOfRows);
+        totalPages = Math.min(totalPages, 3);
+
+        savedCount += saveHospitals(firstResponse);
+
+        for (int page = 2; page <= totalPages; page++) {
+            HiraHospitalResponse response =
+                    hiraHospitalClient.getHospitalList(page, numOfRows);
+
+            savedCount += saveHospitals(response);
+        }
+
+        return savedCount;
+    }
+
+    public HiraHospitalResponse getHiraHospitalTest() {
+        return hiraHospitalClient.getHospitalList(1, 10);
     }
 }
