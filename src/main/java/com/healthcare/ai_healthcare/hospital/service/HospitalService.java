@@ -8,6 +8,7 @@ import com.healthcare.ai_healthcare.hospital.dto.HospitalResponse;
 import com.healthcare.ai_healthcare.hospital.entity.Hospital;
 import com.healthcare.ai_healthcare.hospital.repository.HospitalRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +80,18 @@ public class HospitalService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.HOSPITAL_NOT_FOUND));
 
         return HospitalResponse.from(hospital);
+    }
+
+    public List<HospitalResponse> getRecommendedHospitals(String department) {
+
+        return hospitalRepository
+                .findByDepartmentContaining(
+                        department,
+                        PageRequest.of(0,5)
+                )
+                .stream()
+                .map(HospitalResponse::from)
+                .toList();
     }
 
     @Transactional

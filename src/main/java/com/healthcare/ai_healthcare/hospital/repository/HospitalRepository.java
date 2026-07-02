@@ -16,6 +16,10 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
             String department,
             Pageable pageable
     );
+    Page<Hospital> findByDepartmentContaining(
+            String department,
+            Pageable pageable
+    );
 
     boolean existsByYkiho(String ykiho);
 
