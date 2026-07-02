@@ -24,3 +24,7 @@ jwt:
 
 server:
   port: 8081
+
+hira:
+  api:
+    service-key: ${HIRA_SERVICE_KEY}
