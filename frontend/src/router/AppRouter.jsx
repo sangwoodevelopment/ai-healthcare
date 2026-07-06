@@ -6,6 +6,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 import FavoritePage from "../pages/Favorite/FavoritePage.jsx";
 import HospitalPage from "../pages/Hospital/HospitalPage.jsx";
 import AiPage from "../pages/Ai/AiPage.jsx";
+import HistoryPage from "../pages/History/HistoryPage.jsx";
 
 function AppRouter() {
     return (
@@ -15,9 +16,8 @@ function AppRouter() {
                 <Route path="/ai" element={<ProtectedRoute><AiPage /></ProtectedRoute>} />
                 <Route path="/hospitals" element={<ProtectedRoute><HospitalPage /></ProtectedRoute>} />
                 <Route path="/favorites" element={<ProtectedRoute><FavoritePage /></ProtectedRoute>} />
-
-                <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>}
-                />
+                <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>}/>
+                <Route path="/histories" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
             </Routes>
         </BrowserRouter>
     );
