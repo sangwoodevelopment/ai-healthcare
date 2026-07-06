@@ -1,6 +1,6 @@
 import {useState} from "react";
-import api from "../../api/api";
 import { useNavigate } from "react-router-dom"
+import {login} from "../../api/authApi.js";
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -8,7 +8,7 @@ function LoginPage() {
     const [password, setPassword] = useState("");
     const handleLogin = async () => {
         try {
-            const response = await api.post("/api/auth/login", {
+            const response = await login({
                 email,
                 password,
             });

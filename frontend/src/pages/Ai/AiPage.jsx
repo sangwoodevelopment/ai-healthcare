@@ -1,6 +1,7 @@
 import { useState } from "react";
-import api from "../../api/api";
 import Header from "../../components/Header";
+import {analyzeSymptom} from "../../api/aiApi.js";
+import LoadingSpinner from "../../components/LoadingSpinner.jsx";
 
 function AiPage() {
     const [symptom, setSymptom] = useState("");
@@ -11,17 +12,7 @@ function AiPage() {
         try {
             setLoading(true);
 
-            const token = localStorage.getItem("accessToken");
-
-            const response = await api.post(
-                "/api/ai/symptom",
-                { symptom },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await analyzeSymptom(symptom);
 
             setResult(response.data.data);
         } catch (error) {
@@ -59,7 +50,7 @@ function AiPage() {
                         {loading ? "분석 중..." : "AI 분석하기"}
                     </button>
                 </div>
-
+                {loading && <LoadingSpinner />}
                 {result && (
                     <div className="space-y-6">
                         <div className="bg-white rounded-2xl shadow p-6">
@@ -86,12 +77,12 @@ function AiPage() {
                                             key={hospital.id}
                                             className="border border-slate-200 rounded-xl p-4 hover:bg-slate-50"
                                         >
-                                            <h3 className="font-bold text-lg">{hospital.name}</h3>
-                                            <p className="text-slate-600 mt-1">{hospital.address}</p>
-                                            <p className="text-slate-500 mt-1">{hospital.phoneNumber}</p>
+                                            <h3 className="font-bold text-lg">🏥 {hospital.name}</h3>
+                                            <p className="text-slate-600 mt-1">📍 {hospital.address}</p>
+                                            <p className="text-slate-500 mt-1">☎ {hospital.phoneNumber}</p>
                                             <span className="inline-block mt-3 text-sm bg-blue-100 text-blue-700 px-3 py-1 rounded-full">
-                        {hospital.department}
-                      </span>
+                                                {hospital.department}
+                                            </span>
                                         </div>
                                     ))}
                                 </div>
