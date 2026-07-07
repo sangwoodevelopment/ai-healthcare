@@ -3,14 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import Header from "../../components/Header";
 import HospitalCard from "../../components/HospitalCard";
-import LoadingSpinner from "../../components/LoadingSpinner.jsx";
-
 import { searchHospitals } from "../../api/hospitalApi";
 import {
     getFavorites,
     addFavorite as addFavoriteApi,
 } from "../../api/favoriteApi";
 import toast from "react-hot-toast";
+import HospitalCardSkeleton from "../../components/HospitalCardSkeleton.jsx";
 
 function HospitalPage() {
     const [keyword, setKeyword] = useState("");
@@ -43,7 +42,7 @@ function HospitalPage() {
             setTotalPages(response.data.data.totalPages);
             setPage(targetPage);
         } catch (error) {
-            alert("병원 검색 실패");
+            toast.error("병원 검색 실패");
             console.error(error);
         } finally {
             setLoading(false);
@@ -102,7 +101,11 @@ function HospitalPage() {
                 </div>
 
                 {loading ? (
-                    <LoadingSpinner />
+                    <div className="grid gap-4">
+                        {[1, 2, 3].map((item) => (
+                            <HospitalCardSkeleton key={item} />
+                        ))}
+                    </div>
                 ) : (
                     <div className="grid gap-4">
                         {hospitals.map((hospital) => (
