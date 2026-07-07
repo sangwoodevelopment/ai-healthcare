@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
 import Header from "../../components/Header";
-import { getAiHistories } from "../../api/aiApi";
+import { deleteAiHistory, getAiHistories } from "../../api/aiApi";
 
 function HistoryPage() {
     const [histories, setHistories] = useState([]);
@@ -10,7 +12,22 @@ function HistoryPage() {
             const response = await getAiHistories();
             setHistories(response.data.data);
         } catch (error) {
-            alert("AI 분석 이력 조회 실패");
+            toast.error("AI 분석 이력 조회 실패");
+            console.error(error);
+        }
+    };
+
+    const handleDeleteHistory = async (historyId) => {
+        try {
+            await deleteAiHistory(historyId);
+
+            setHistories((prev) =>
+                prev.filter((history) => history.id !== historyId)
+            );
+
+            toast.success("AI 분석 이력이 삭제되었습니다.");
+        } catch (error) {
+            toast.error("AI 분석 이력 삭제 실패");
             console.error(error);
         }
     };
@@ -43,6 +60,15 @@ function HistoryPage() {
                             </p>
 
                             <p className="text-slate-600 mt-2">{history.reason}</p>
+
+                            <div className="flex justify-end mt-4">
+                                <button
+                                    onClick={() => handleDeleteHistory(history.id)}
+                                    className="text-red-500 hover:text-red-700 font-semibold"
+                                >
+                                    🗑 삭제
+                                </button>
+                            </div>
                         </div>
                     ))}
                 </div>

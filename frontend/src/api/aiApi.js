@@ -7,3 +7,7 @@ export const analyzeSymptom = (symptom) => {
 export const getAiHistories = () => {
     return api.get("/api/ai/histories");
 };
+
+export const deleteAiHistory = (historyId) => {
+    return api.delete(`/api/ai/histories/${historyId}`);
+};
