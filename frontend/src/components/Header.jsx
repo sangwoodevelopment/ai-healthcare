@@ -31,6 +31,9 @@ function Header() {
                     <button onClick={() => navigate("/histories")} className="hover:text-blue-600">
                         분석 이력
                     </button>
+                    <button onClick={() => navigate("/mypage")} className="hover:text-blue-600">
+                        마이페이지
+                    </button>
                     <button
                         onClick={handleLogout}
                         className="bg-red-500 text-white px-5 py-2 rounded-xl hover:bg-red-600"

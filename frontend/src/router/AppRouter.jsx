@@ -8,6 +8,7 @@ import HospitalPage from "../pages/Hospital/HospitalPage.jsx";
 import AiPage from "../pages/Ai/AiPage.jsx";
 import HistoryPage from "../pages/History/HistoryPage.jsx";
 import HospitalDetailPage from "../pages/Hospital/HospitalDetailPage.jsx";
+import MyPage from "../pages/MyPage/MyPage.jsx";
 
 function AppRouter() {
     return (
@@ -20,6 +21,7 @@ function AppRouter() {
                 <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>}/>
                 <Route path="/histories" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
                 <Route path="/hospitals/:id" element={<ProtectedRoute><HospitalDetailPage /></ProtectedRoute>} />
+                <Route path="/mypage" element={<ProtectedRoute><MyPage /></ProtectedRoute>} />
             </Routes>
         </BrowserRouter>
     );
