@@ -7,6 +7,7 @@ import { searchHospitals } from "../../api/hospitalApi";
 import {
     getFavorites,
     addFavorite as addFavoriteApi,
+    deleteFavorite as deleteFavoriteApi,
 } from "../../api/favoriteApi";
 import toast from "react-hot-toast";
 import HospitalCardSkeleton from "../../components/HospitalCardSkeleton.jsx";
@@ -54,16 +55,23 @@ function HospitalPage() {
         handleSearchHospitals(0);
     };
 
-    const handleAddFavorite = async (hospitalId) => {
+    const handleToggleFavorite = async (hospitalId) => {
         try {
-            await addFavoriteApi(hospitalId);
+            if (favoriteIds.includes(hospitalId)) {
+                await deleteFavoriteApi(hospitalId);
 
-            setFavoriteIds((prev) =>
-                prev.includes(hospitalId) ? prev : [...prev, hospitalId]
-            );
-            toast.success("즐겨찾기에 추가되었습니다.");
+                setFavoriteIds((prev) => prev.filter((id) => id !== hospitalId));
+
+                toast.success("즐겨찾기에서 삭제되었습니다.");
+            } else {
+                await addFavoriteApi(hospitalId);
+
+                setFavoriteIds((prev) => [...prev, hospitalId]);
+
+                toast.success("즐겨찾기에 추가되었습니다.");
+            }
         } catch (error) {
-            toast.error("즐겨찾기 추가 실패");
+            toast.error("즐겨찾기 처리 실패");
             console.error(error);
         }
     };
@@ -116,7 +124,7 @@ function HospitalPage() {
                                 onClick={() => navigate(`/hospitals/${hospital.id}`)}
                                 rightArea={
                                     <button
-                                        onClick={() => handleAddFavorite(hospital.id)}
+                                        onClick={() => handleToggleFavorite(hospital.id)}
                                         className={`h-fit text-3xl transition hover:scale-110 ${
                                             favoriteIds.includes(hospital.id)
                                                 ? "text-yellow-500"
