@@ -1,16 +1,25 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import Header from "../../components/Header";
 import HospitalCard from "../../components/HospitalCard";
-import { searchHospitals } from "../../api/hospitalApi";
-import {getFavorites, addFavorite as addFavoriteApi,} from "../../api/favoriteApi";
 import LoadingSpinner from "../../components/LoadingSpinner.jsx";
-import {useNavigate} from "react-router-dom";
+
+import { searchHospitals } from "../../api/hospitalApi";
+import {
+    getFavorites,
+    addFavorite as addFavoriteApi,
+} from "../../api/favoriteApi";
 
 function HospitalPage() {
     const [keyword, setKeyword] = useState("");
     const [hospitals, setHospitals] = useState([]);
     const [favoriteIds, setFavoriteIds] = useState([]);
     const [loading, setLoading] = useState(false);
+
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+
     const navigate = useNavigate();
 
     const fetchFavorites = async () => {
@@ -23,17 +32,25 @@ function HospitalPage() {
         }
     };
 
-    const handleSearchHospitals = async () => {
+    const handleSearchHospitals = async (targetPage = page) => {
         try {
             setLoading(true);
-            const response = await searchHospitals(keyword);
+
+            const response = await searchHospitals(keyword, targetPage, 10);
+
             setHospitals(response.data.data.content);
+            setTotalPages(response.data.data.totalPages);
+            setPage(targetPage);
         } catch (error) {
             alert("병원 검색 실패");
             console.error(error);
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearchButtonClick = () => {
+        handleSearchHospitals(0);
     };
 
     const handleAddFavorite = async (hospitalId) => {
@@ -52,6 +69,8 @@ function HospitalPage() {
     useEffect(() => {
         fetchFavorites();
     }, []);
+
+    const pageNumbers = Array.from({ length: totalPages }, (_, index) => index);
 
     return (
         <div className="min-h-screen bg-slate-100">
@@ -72,13 +91,14 @@ function HospitalPage() {
                     />
 
                     <button
-                        onClick={handleSearchHospitals}
+                        onClick={handleSearchButtonClick}
                         disabled={loading}
                         className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 disabled:bg-slate-400"
                     >
                         {loading ? "검색 중..." : "검색"}
                     </button>
                 </div>
+
                 {loading ? (
                     <LoadingSpinner />
                 ) : (
@@ -108,6 +128,40 @@ function HospitalPage() {
                 {!loading && hospitals.length === 0 && (
                     <div className="text-center text-slate-500 mt-12">
                         검색 결과가 없습니다.
+                    </div>
+                )}
+
+                {!loading && totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-10">
+                        <button
+                            onClick={() => handleSearchHospitals(page - 1)}
+                            disabled={page === 0}
+                            className="px-3 py-2 rounded-lg border bg-white hover:bg-slate-100 disabled:opacity-40"
+                        >
+                            ◀
+                        </button>
+
+                        {pageNumbers.map((pageNumber) => (
+                            <button
+                                key={pageNumber}
+                                onClick={() => handleSearchHospitals(pageNumber)}
+                                className={`w-10 h-10 rounded-lg transition ${
+                                    page === pageNumber
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white border hover:bg-slate-100"
+                                }`}
+                            >
+                                {pageNumber + 1}
+                            </button>
+                        ))}
+
+                        <button
+                            onClick={() => handleSearchHospitals(page + 1)}
+                            disabled={page === totalPages - 1}
+                            className="px-3 py-2 rounded-lg border bg-white hover:bg-slate-100 disabled:opacity-40"
+                        >
+                            ▶
+                        </button>
                     </div>
                 )}
             </main>
