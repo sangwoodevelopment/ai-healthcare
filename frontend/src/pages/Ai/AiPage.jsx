@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "../../components/Header";
 import {analyzeSymptom} from "../../api/aiApi.js";
 import LoadingSpinner from "../../components/LoadingSpinner.jsx";
+import toast from "react-hot-toast";
 
 function AiPage() {
     const [symptom, setSymptom] = useState("");
@@ -15,8 +16,9 @@ function AiPage() {
             const response = await analyzeSymptom(symptom);
 
             setResult(response.data.data);
+            toast.success("AI 분석이 완료되었습니다.");
         } catch (error) {
-            alert("AI 분석 실패");
+            toast.error("AI 분석 실패");
             console.error(error);
         } finally {
             setLoading(false);

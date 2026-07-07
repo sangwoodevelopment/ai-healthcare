@@ -10,6 +10,7 @@ import {
     getFavorites,
     addFavorite as addFavoriteApi,
 } from "../../api/favoriteApi";
+import toast from "react-hot-toast";
 
 function HospitalPage() {
     const [keyword, setKeyword] = useState("");
@@ -60,8 +61,9 @@ function HospitalPage() {
             setFavoriteIds((prev) =>
                 prev.includes(hospitalId) ? prev : [...prev, hospitalId]
             );
+            toast.success("즐겨찾기에 추가되었습니다.");
         } catch (error) {
-            alert("즐겨찾기 추가 실패");
+            toast.error("즐겨찾기 추가 실패");
             console.error(error);
         }
     };

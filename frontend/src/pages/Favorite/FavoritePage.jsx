@@ -6,6 +6,7 @@ import {
     deleteFavorite as deleteFavoriteApi,
 } from "../../api/favoriteApi";
 import {useNavigate} from "react-router-dom";
+import toast from "react-hot-toast";
 
 function FavoritePage() {
     const [favorites, setFavorites] = useState([]);
@@ -28,8 +29,9 @@ function FavoritePage() {
             setFavorites((prev) =>
                 prev.filter((favorite) => favorite.hospitalId !== hospitalId)
             );
+            toast.success("즐겨찾기가 삭제되었습니다.");
         } catch (error) {
-            alert("즐겨찾기 삭제 실패");
+            toast.error("즐겨찾기 삭제 실패");
             console.error(error);
         }
     };

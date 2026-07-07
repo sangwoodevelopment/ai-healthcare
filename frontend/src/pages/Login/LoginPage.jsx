@@ -1,6 +1,7 @@
 import {useState} from "react";
 import { useNavigate } from "react-router-dom"
 import {login} from "../../api/authApi.js";
+import toast from "react-hot-toast";
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -19,9 +20,9 @@ function LoginPage() {
 
             navigate("/home");
 
-            alert("로그인 성공!");
+            toast.success("로그인 성공");
         } catch (error) {
-            alert("로그인 실패");
+            toast.error("로그인에 실패했습니다.");
             console.error(error);
         }
     };
