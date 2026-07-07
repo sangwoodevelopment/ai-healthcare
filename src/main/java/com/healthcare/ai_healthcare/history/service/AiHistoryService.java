@@ -61,4 +61,17 @@ public class AiHistoryService {
                         .build())
                 .toList();
     }
+    @Transactional
+    public void deleteHistory(Long historyId) {
+        User user = getCurrentUser();
+
+        AiHistory history = aiHistoryRepository.findById(historyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BAD_REQUEST));
+
+        if (!history.getUser().getId().equals(user.getId())) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        }
+
+        aiHistoryRepository.delete(history);
+    }
 }

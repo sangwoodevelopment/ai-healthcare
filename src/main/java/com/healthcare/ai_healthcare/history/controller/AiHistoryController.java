@@ -28,4 +28,9 @@ public class AiHistoryController {
                 aiHistoryService.getMyHistories()
         );
     }
+    @DeleteMapping("/{historyId}")
+    public ApiResponse<Void> deleteHistory(@PathVariable Long historyId) {
+        aiHistoryService.deleteHistory(historyId);
+        return ApiResponse.success("AI 분석 이력 삭제 성공");
+    }
 }
