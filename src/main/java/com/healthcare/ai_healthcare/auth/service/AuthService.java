@@ -1,13 +1,13 @@
-package com.healthcare.ai_healthcare.service;
+package com.healthcare.ai_healthcare.auth.service;
 
 import com.healthcare.ai_healthcare.config.JwtTokenProvider;
-import com.healthcare.ai_healthcare.dto.LoginRequest;
-import com.healthcare.ai_healthcare.dto.LoginResponse;
-import com.healthcare.ai_healthcare.dto.SignupRequest;
-import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.auth.dto.LoginRequest;
+import com.healthcare.ai_healthcare.auth.dto.LoginResponse;
+import com.healthcare.ai_healthcare.auth.dto.SignupRequest;
+import com.healthcare.ai_healthcare.user.entity.User;
 import com.healthcare.ai_healthcare.exception.BusinessException;
 import com.healthcare.ai_healthcare.exception.ErrorCode;
-import com.healthcare.ai_healthcare.repository.UserRepository;
+import com.healthcare.ai_healthcare.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,14 +1,14 @@
-package com.healthcare.ai_healthcare.controller;
+package com.healthcare.ai_healthcare.auth.controller;
 
-import com.healthcare.ai_healthcare.dto.SignupRequest;
-import com.healthcare.ai_healthcare.service.AuthService;
+import com.healthcare.ai_healthcare.auth.dto.SignupRequest;
+import com.healthcare.ai_healthcare.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import com.healthcare.ai_healthcare.dto.LoginRequest;
-import com.healthcare.ai_healthcare.dto.LoginResponse;
+import com.healthcare.ai_healthcare.auth.dto.LoginRequest;
+import com.healthcare.ai_healthcare.auth.dto.LoginResponse;
 import com.healthcare.ai_healthcare.common.response.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 

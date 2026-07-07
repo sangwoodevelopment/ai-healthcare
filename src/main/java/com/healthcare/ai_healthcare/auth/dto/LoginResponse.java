@@ -1,4 +1,4 @@
-package com.healthcare.ai_healthcare.dto;
+package com.healthcare.ai_healthcare.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

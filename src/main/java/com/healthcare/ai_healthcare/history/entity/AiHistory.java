@@ -1,6 +1,6 @@
 package com.healthcare.ai_healthcare.history.entity;
 
-import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;

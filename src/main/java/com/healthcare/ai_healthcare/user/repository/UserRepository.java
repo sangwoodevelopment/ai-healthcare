@@ -1,6 +1,6 @@
-package com.healthcare.ai_healthcare.repository;
+package com.healthcare.ai_healthcare.user.repository;
 
-import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

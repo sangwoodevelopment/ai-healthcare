@@ -1,6 +1,6 @@
 package com.healthcare.ai_healthcare.favorite.entity;
 
-import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.user.entity.User;
 import com.healthcare.ai_healthcare.hospital.entity.Hospital;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

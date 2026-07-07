@@ -1,6 +1,6 @@
 package com.healthcare.ai_healthcare.favorite.service;
 
-import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.user.entity.User;
 import com.healthcare.ai_healthcare.exception.BusinessException;
 import com.healthcare.ai_healthcare.exception.ErrorCode;
 import com.healthcare.ai_healthcare.favorite.dto.FavoriteResponse;
@@ -8,7 +8,7 @@ import com.healthcare.ai_healthcare.favorite.entity.Favorite;
 import com.healthcare.ai_healthcare.favorite.repository.FavoriteRepository;
 import com.healthcare.ai_healthcare.hospital.entity.Hospital;
 import com.healthcare.ai_healthcare.hospital.repository.HospitalRepository;
-import com.healthcare.ai_healthcare.repository.UserRepository;
+import com.healthcare.ai_healthcare.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

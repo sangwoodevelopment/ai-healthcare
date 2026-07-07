@@ -1,4 +1,4 @@
-package com.healthcare.ai_healthcare.entity;
+package com.healthcare.ai_healthcare.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

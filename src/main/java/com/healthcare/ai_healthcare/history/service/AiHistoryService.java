@@ -1,12 +1,12 @@
 package com.healthcare.ai_healthcare.history.service;
 
-import com.healthcare.ai_healthcare.entity.User;
+import com.healthcare.ai_healthcare.user.entity.User;
 import com.healthcare.ai_healthcare.exception.BusinessException;
 import com.healthcare.ai_healthcare.exception.ErrorCode;
 import com.healthcare.ai_healthcare.history.dto.AiHistoryResponse;
 import com.healthcare.ai_healthcare.history.entity.AiHistory;
 import com.healthcare.ai_healthcare.history.repository.AiHistoryRepository;
-import com.healthcare.ai_healthcare.repository.UserRepository;
+import com.healthcare.ai_healthcare.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
