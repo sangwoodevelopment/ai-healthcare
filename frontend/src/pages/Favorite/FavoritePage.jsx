@@ -5,9 +5,11 @@ import {
     getFavorites,
     deleteFavorite as deleteFavoriteApi,
 } from "../../api/favoriteApi";
+import {useNavigate} from "react-router-dom";
 
 function FavoritePage() {
     const [favorites, setFavorites] = useState([]);
+    const navigate = useNavigate();
 
     const fetchFavorites = async () => {
         try {
@@ -49,6 +51,7 @@ function FavoritePage() {
                         <HospitalCard
                             key={favorite.favoriteId}
                             hospital={favorite}
+                            onClick={() => navigate(`/hospitals/${favorite.hospitalId}`)}
                             rightArea={
                                 <button
                                     onClick={() => handleDeleteFavorite(favorite.hospitalId)}

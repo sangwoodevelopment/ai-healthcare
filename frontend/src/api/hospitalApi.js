@@ -9,3 +9,7 @@ export const searchHospitals = (keyword, page = 0, size = 10) => {
         },
     });
 };
+
+export const getHospital = (id) => {
+    return api.get(`/api/hospitals/${id}`);
+};

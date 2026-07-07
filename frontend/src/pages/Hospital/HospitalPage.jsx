@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import Header from "../../components/Header";
 import HospitalCard from "../../components/HospitalCard";
 import { searchHospitals } from "../../api/hospitalApi";
-import {
-    getFavorites,
-    addFavorite as addFavoriteApi,
-} from "../../api/favoriteApi";
+import {getFavorites, addFavorite as addFavoriteApi,} from "../../api/favoriteApi";
 import LoadingSpinner from "../../components/LoadingSpinner.jsx";
+import {useNavigate} from "react-router-dom";
 
 function HospitalPage() {
     const [keyword, setKeyword] = useState("");
     const [hospitals, setHospitals] = useState([]);
     const [favoriteIds, setFavoriteIds] = useState([]);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const fetchFavorites = async () => {
         try {
@@ -88,6 +87,7 @@ function HospitalPage() {
                             <HospitalCard
                                 key={hospital.id}
                                 hospital={hospital}
+                                onClick={() => navigate(`/hospitals/${hospital.id}`)}
                                 rightArea={
                                     <button
                                         onClick={() => handleAddFavorite(hospital.id)}
