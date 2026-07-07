@@ -3,9 +3,12 @@ import toast from "react-hot-toast";
 
 import Header from "../../components/Header";
 import { deleteAiHistory, getAiHistories } from "../../api/aiApi";
+import ConfirmModal from "../../components/ConfirmModal.jsx";
 
 function HistoryPage() {
     const [histories, setHistories] = useState([]);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedHistoryId, setSelectedHistoryId] = useState(null);
 
     const fetchHistories = async () => {
         try {
@@ -63,7 +66,10 @@ function HistoryPage() {
 
                             <div className="flex justify-end mt-4">
                                 <button
-                                    onClick={() => handleDeleteHistory(history.id)}
+                                    onClick={() => {
+                                        setSelectedHistoryId(history.id);
+                                        setOpenModal(true);
+                                    }}
                                     className="text-red-500 hover:text-red-700 font-semibold"
                                 >
                                     🗑 삭제
@@ -79,6 +85,16 @@ function HistoryPage() {
                     </div>
                 )}
             </main>
+            <ConfirmModal
+                open={openModal}
+                title="AI 분석 이력 삭제"
+                message="정말 삭제하시겠습니까?"
+                onCancel={() => setOpenModal(false)}
+                onConfirm={() => {
+                    handleDeleteHistory(selectedHistoryId);
+                    setOpenModal(false);
+                }}
+            />
         </div>
     );
 }
