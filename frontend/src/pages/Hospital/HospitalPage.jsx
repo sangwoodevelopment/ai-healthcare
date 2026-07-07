@@ -10,6 +10,7 @@ import {
 } from "../../api/favoriteApi";
 import toast from "react-hot-toast";
 import HospitalCardSkeleton from "../../components/HospitalCardSkeleton.jsx";
+import EmptyState from "../../components/EmptyState.jsx";
 
 function HospitalPage() {
     const [keyword, setKeyword] = useState("");
@@ -131,9 +132,11 @@ function HospitalPage() {
                 )}
 
                 {!loading && hospitals.length === 0 && (
-                    <div className="text-center text-slate-500 mt-12">
-                        검색 결과가 없습니다.
-                    </div>
+                    <EmptyState
+                        icon="🔍"
+                        title="검색 결과가 없습니다"
+                        description="다른 병원명, 지역, 병원 유형으로 검색해보세요."
+                    />
                 )}
 
                 {!loading && totalPages > 1 && (

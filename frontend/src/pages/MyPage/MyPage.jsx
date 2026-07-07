@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import Header from "../../components/Header";
 import { getDashboard, getMyPage } from "../../api/userApi";
+import DepartmentPieChart from "../../components/DepartmentPieChart.jsx";
 
 function MyPage() {
     const [myInfo, setMyInfo] = useState(null);
@@ -103,30 +104,14 @@ function MyPage() {
                 </div>
 
                 <div className="bg-white rounded-3xl shadow p-8">
-                    <h2 className="text-2xl font-bold mb-6">🩺 진료과 분석 통계</h2>
+                    <div className="bg-white rounded-3xl shadow p-8">
+                        <h2 className="text-2xl font-bold mb-6">
+                            🥧 진료과 분석
+                        </h2>
 
-                    <div className="space-y-4">
-                        {dashboard.departmentStats?.length > 0 ? (
-                            dashboard.departmentStats.map((stat) => (
-                                <div key={stat.department}>
-                                    <div className="flex justify-between mb-2">
-                                        <span className="text-slate-700">{stat.department}</span>
-                                        <span className="font-semibold">{stat.count}회</span>
-                                    </div>
-
-                                    <div className="w-full bg-slate-200 rounded-full h-3">
-                                        <div
-                                            className="bg-blue-500 h-3 rounded-full"
-                                            style={{
-                                                width: `${Math.min(stat.count * 20, 100)}%`,
-                                            }}
-                                        ></div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <p className="text-slate-500">AI 분석 통계가 없습니다.</p>
-                        )}
+                        <DepartmentPieChart
+                            departmentStats={dashboard.departmentStats}
+                        />
                     </div>
                 </div>
             </main>
