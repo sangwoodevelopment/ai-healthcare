@@ -7,7 +7,7 @@
 
 # 🏥 AI Healthcare
 
-> **OpenAI를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 AI 기반 Healthcare 서비스**
+> **OpenAI를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 <br/> AI 기반 Healthcare 서비스**
 
 ![메인](docs/images/main.png)
 
@@ -28,13 +28,13 @@
 
 # 📌 프로젝트 소개
 
-AI Healthcare는 **OpenAI API**를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 의료 보조 웹 서비스입니다.
+AI Healthcare는 **OpenAI API**를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 의료 보조 웹 서비스입니다
 
-사용자는 병원을 검색하고 즐겨찾기로 관리할 수 있으며 AI 분석 이력과 개인 통계를 마이페이지에서 확인할 수 있습니다.
+사용자는 병원을 검색하고 즐겨찾기로 관리할 수 있으며 AI 분석 이력과 개인 통계를 마이페이지에서 확인할 수 있습니다
 
-사용자 경험 향상을 위해 Skeleton Loading, Toast Message, Confirm Modal, Empty State 등을 적용하여 실제 서비스와 유사한 UI/UX를 구현하였습니다.
+사용자 경험 향상을 위해 Skeleton Loading, Toast Message, Confirm Modal, Empty State 등을 적용하여 실제 서비스와 유사한 UI/UX를 구현하였습니다
 
-또한 향후 확장성을 고려하여 병원 종별(Hospital Type)과 진료과(Medical Department)를 분리하는 구조로 설계하였습니다.
+또한 향후 확장성을 고려하여 병원 종별(Hospital Type)과 진료과(Medical Department)를 분리하는 구조로 설계하였습니다
 
 ---
 
@@ -198,10 +198,10 @@ frontend
 
 ![ERD](docs/images/erd.png)
 
-> 현재 구현에서는 HIRA 병원 기본정보 API의 한계로 `department` 컬럼을 사용하고 있습니다.
+> 현재 구현에서는 HIRA 병원 기본정보 API의 한계로 `department` 컬럼을 사용하고 있습니다
 >
 > 향후에는 `hospitalType`과 `medicalDepartment`를 분리하고,
-> HIRA 진료과목 API를 추가 연동하여 AI 추천 정확도를 향상시킬 예정입니다.
+> HIRA 진료과목 API를 추가 연동하여 AI 추천 정확도를 향상시킬 예정입니다
 
 ---
 
@@ -235,11 +235,11 @@ frontend
 
 ### 문제
 
-OpenAI 응답을 DTO로 변환하는 과정에서 JSON Parsing 오류가 발생하였습니다.
+OpenAI 응답을 DTO로 변환하는 과정에서 JSON Parsing 오류 발생
 
 ### 해결
 
-ObjectMapper를 활용하여 DTO로 변환하고 예외 발생 시 기본 추천 병원을 반환하도록 구현하여 서비스 안정성을 확보하였습니다.
+ObjectMapper를 활용하여 DTO로 변환하고 예외 발생 시 기본 추천 병원을 반환하도록 구현하여 서비스 안정성을 확보
 
 ---
 
@@ -247,11 +247,11 @@ ObjectMapper를 활용하여 DTO로 변환하고 예외 발생 시 기본 추천
 
 ### 문제
 
-Service마다 로그인 사용자를 조회하는 코드가 중복되었습니다.
+Service마다 로그인 사용자를 조회하는 코드가 중복
 
 ### 해결
 
-SecurityContextHolder를 활용하여 공통 메서드로 로그인 사용자를 조회하도록 리팩토링하여 코드 중복을 제거하였습니다.
+SecurityContextHolder를 활용하여 공통 메서드로 로그인 사용자를 조회하도록 리팩토링하여<br/> 코드 중복을 제거
 
 ---
 
@@ -259,30 +259,61 @@ SecurityContextHolder를 활용하여 공통 메서드로 로그인 사용자를
 
 ### 문제
 
-HIRA 병원 기본정보 API의 `department` 값은 실제 진료과가 아닌 **상급종합, 종합병원** 등의 병원 종별 정보를 제공하였습니다.
+HIRA 병원 기본정보 API의 `department` 값은 실제 진료과가 아닌 **상급종합, 종합병원** 등의 병원 종별 정보를 제공
 
 ### 해결
 
-현재 프로젝트에서는 MVP 단계로 병원 종별 기준 추천을 구현하였으며,
+현재 프로젝트에서는 MVP 단계로 병원 종별 기준 추천을 구현하였으며, 
 
 향후에는
 
 - hospitalType
 - medicalDepartment
 
-를 분리하고 HIRA 진료과목 API를 추가 연동하여 추천 정확도를 개선할 예정입니다.
+를 분리하고 HIRA 진료과목 API를 추가 연동하여 추천 정확도를 개선할 예정입니다
+
+---
+# 🚀 배포 과정
+
+### 1. Docker 이미지 생성
+
+```bash
+docker build -t sangwo0/ai-healthcare-backend:latest .
+```
+
+### 2. Docker Hub 업로드
+
+```bash
+docker push sangwo0/ai-healthcare-backend:latest
+```
+
+### 3. AWS EC2
+
+```bash
+ssh -i ai-healthcare.pem ubuntu@EC2
+```
+
+### 4. Docker Compose
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+### 5. 결과
+
+- Docker Compose 기반으로 Spring Boot와 MySQL 컨테이너 구성
+- Docker Hub 활용하여 이미지를 배포하고 EC2에서 Pull 방식으로 실행하도록 구성
+- AWS EC2 환경에서 배포를 진행, 현재 프리티어 자원 제약으로 인해 운영 환경 안정화 진행 중
 
 ---
 
 # 🚀 향후 개선 사항
 
-- AWS EC2 배포
 - GitHub Actions CI/CD
-- HTTPS 적용
 - HIRA 진료과목 API 연동
 - 지도(Map API) 연동
 - 위치 기반 병원 추천
-- AI 분석 결과 PDF 저장
 - 검색 자동완성
 
 ---
@@ -296,7 +327,3 @@ HIRA 병원 기본정보 API의 `department` 값은 실제 진료과가 아닌 *
 - Database : MySQL
 
 ---
-
-# 📄 License
-
-This project is for portfolio purposes only.
