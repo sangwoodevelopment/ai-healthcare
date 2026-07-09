@@ -2,7 +2,7 @@ spring:
   application:
     name: ai-healthcare
   datasource:
-    url: jdbc:mysql://localhost:3306/healthcare
+    url: jdbc:mysql://${DB_HOST:localhost}:3306/healthcare
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
