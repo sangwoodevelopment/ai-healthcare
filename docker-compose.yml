@@ -3,24 +3,31 @@ services:
     image: mysql:8.0
     container_name: healthcare-mysql
     restart: always
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: healthcare
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
     ports:
       - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
 
   backend:
-    build: .
+    image: sangwo0/ai-healthcare-backend:latest
     container_name: healthcare-backend
     restart: always
     depends_on:
       - mysql
+    env_file:
+      - .env
     environment:
+      SPRING_PROFILES_ACTIVE: prod
       DB_HOST: mysql
       DB_USERNAME: root
-      DB_PASSWORD: 1234
+      DB_PASSWORD: ${DB_PASSWORD}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      HIRA_SERVICE_KEY: ${HIRA_SERVICE_KEY}
     ports:
       - "8081:8080"
 

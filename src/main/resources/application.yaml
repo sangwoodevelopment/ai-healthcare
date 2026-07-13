@@ -15,16 +15,16 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
 
-  profiles:
-    active: local
-
 jwt:
   secret: healthcare-secret-key-must-be-at-least-32-characters-long
   expiration: 86400000
 
 server:
-  port: 8081
+  port: 8080
 
 hira:
   api:
     service-key: ${HIRA_SERVICE_KEY}
+
+openai:
+  api-key: ${OPENAI_API_KEY}

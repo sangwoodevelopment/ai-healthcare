@@ -1,13 +1,13 @@
+# 🏥 AI Healthcare
+
+> **OpenAI를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 <br/> AI 기반 Healthcare 서비스**
+
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/SpringBoot-3.5-green)
 ![React](https://img.shields.io/badge/React-19-blue)
 ![MySQL](https://img.shields.io/badge/MySQL-8-blue)
 ![JWT](https://img.shields.io/badge/JWT-Authentication-red)
 ![OpenAI](https://img.shields.io/badge/OpenAI-API-black)
-
-# 🏥 AI Healthcare
-
-> **OpenAI를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 <br/> AI 기반 Healthcare 서비스**
 
 ![메인](docs/images/main.png)
 
@@ -28,49 +28,26 @@
 
 # 📌 프로젝트 소개
 
-AI Healthcare는 **OpenAI API**를 활용하여 사용자의 증상을 분석하고 적절한 병원을 추천하는 의료 보조 웹 서비스입니다
+AI Healthcare는 사용자가 입력한 증상을 AI가 분석하여 적절한 진료과를 추천하고,
+HIRA 공공데이터를 활용하여 병원 정보를 조회할 수 있는 웹 서비스입니다.
 
-사용자는 병원을 검색하고 즐겨찾기로 관리할 수 있으며 AI 분석 이력과 개인 통계를 마이페이지에서 확인할 수 있습니다
+Spring Boot 기반 REST API를 직접 설계하고 React와 연동하여 서비스를 구현하였으며,
+JWT 기반 로그인과 사용자별 즐겨찾기, AI 분석 이력 기능을 제공합니다.
 
-사용자 경험 향상을 위해 Skeleton Loading, Toast Message, Confirm Modal, Empty State 등을 적용하여 실제 서비스와 유사한 UI/UX를 구현하였습니다
-
-또한 향후 확장성을 고려하여 병원 종별(Hospital Type)과 진료과(Medical Department)를 분리하는 구조로 설계하였습니다
+또한 Docker Compose를 이용하여 Spring Boot와 MySQL 컨테이너 환경을 구성하고,
+Docker Hub와 AWS EC2를 활용하여 실제 서비스를 배포했습니다.
 
 ---
 
 # 🛠 기술 스택
 
-## Backend
-
-- Java 17
-- Spring Boot 3
-- Spring Security
-- JWT Authentication
-- Spring Data JPA
-- Hibernate
-- MySQL
-- Gradle
-
-## Frontend
-
-- React
-- React Router
-- Axios
-- Tailwind CSS
-- Chart.js
-- React Hot Toast
-
-## Open API
-
-- OpenAI API
-- HIRA Open API
-
-## DevOps
-
-- Git
-- GitHub
-- Docker
-- AWS EC2 (예정)
+| 분야 | 기술 |
+| ----|-----|
+|Backend| Spring Boot, Spring Security, JPA, JWT|
+|Frontend|React|
+|Database|MySQL|
+|Infra|Docker, Docker Compose, Docker Hub, AWS EC2|
+|API| OpenAI API, HIRA Open API|
 
 ---
 
@@ -158,39 +135,34 @@ frontend
 
 ## 👤 회원
 
-- JWT 로그인
 - 회원가입
-- 로그아웃
-- 마이페이지
+- 로그인
+- JWT 기반 인증 및 인가
+- Spring Security 적용
+
+---
 
 ## 🤖 AI 증상 분석
 
-- OpenAI API 기반 증상 분석
-- 추천 병원 조회
-- AI 분석 이력 저장 및 삭제
+- OpenAI API 연동
+- 증상 분석
+- 진료과 추천
 
-## 🏥 병원
+---
 
+## 🏥 병원 검색
+
+- HIRA Open API 연동
 - 병원 검색
 - 병원 상세 조회
-- 페이지네이션
-- 즐겨찾기 토글
 
-## 📊 마이페이지
+---
 
-- 회원 정보 조회
-- 즐겨찾기 개수
-- AI 분석 횟수
-- 진료과 통계 (Pie Chart)
+## ⭐ 사용자 기능
 
-## 🎨 UI / UX
-
-- Skeleton Loading
-- Confirm Modal
-- Toast Message
-- Loading Spinner
-- Empty State
-- Pagination
+- 즐겨찾기
+- AI 분석 이력
+- 마이페이지
 
 ---
 
@@ -229,48 +201,132 @@ frontend
 
 ---
 
-# 🧩 Trouble Shooting
+# 🚨 Trouble Shooting
 
-## 1. OpenAI 응답 JSON Parsing
+## 1️. Spring Security 인증 코드 중복
 
 ### 문제
 
-OpenAI 응답을 DTO로 변환하는 과정에서 JSON Parsing 오류 발생
+JWT 인증 로직이 여러 클래스에 분산되어 있어 유지보수가 어려웠습니다.
+
+### 원인
+
+인증 관련 로직이 공통화되지 않아 동일한 코드가 여러 곳에서 사용되고 있었습니다.
 
 ### 해결
 
-ObjectMapper를 활용하여 DTO로 변환하고 예외 발생 시 기본 추천 병원을 반환하도록 구현하여 서비스 안정성을 확보
+공통 인증 로직을 분리하여 Spring Security 인증 구조를 개선했습니다.
+
+### 결과
+
+- 코드 중복 제거
+- 유지보수성 향상
+- 인증 로직 관리 효율성 개선
 
 ---
 
-## 2. JWT 인증 처리
+## 2. OpenAI API Parsing 오류
 
 ### 문제
 
-Service마다 로그인 사용자를 조회하는 코드가 중복
+OpenAI API 응답을 처리하는 과정에서 JSON Parsing 예외가 발생했습니다.
+
+### 원인
+
+응답 데이터 구조가 상황에 따라 달라질 수 있었고 예외 처리가 부족했습니다.
 
 ### 해결
 
-SecurityContextHolder를 활용하여 공통 메서드로 로그인 사용자를 조회하도록 리팩토링하여<br/> 코드 중복을 제거
+응답 검증 로직과 예외 처리를 추가하여 다양한 응답에서도 정상적으로 동작하도록 개선했습니다.
+
+### 결과
+
+- Parsing 오류 해결
+- 서비스 안정성 향상
+- 예외 상황 대응 가능
 
 ---
 
-## 3. HIRA API 데이터 한계
+## 3️. Docker 환경에서 MySQL 연결 실패
 
 ### 문제
 
-HIRA 병원 기본정보 API의 `department` 값은 실제 진료과가 아닌 **상급종합, 종합병원** 등의 병원 종별 정보를 제공
+Docker Compose 실행 후 Spring Boot가 MySQL에 연결되지 않았습니다.
+
+```text
+Communications link failure
+The driver has not received any packets from the server.
+```
+
+### 원인
+
+Spring Boot가 MySQL보다 먼저 실행되어 DB 초기화가 완료되기 전에 연결을 시도했습니다.
+
+또한 환경 변수 설정이 정상적으로 반영되지 않았습니다.
 
 ### 해결
 
-현재 프로젝트에서는 MVP 단계로 병원 종별 기준 추천을 구현하였으며, 
+- Docker Compose 환경 변수 수정
+- DB Host를 컨테이너 이름(mysql)으로 변경
+- 컨테이너 재생성
+- 환경 변수 재적용
 
-향후에는
+### 결과
 
-- hospitalType
-- medicalDepartment
+- Spring Boot와 MySQL 정상 연결
+- Docker 환경 안정화
+- 컨테이너 기반 개발 환경 구축
 
-를 분리하고 HIRA 진료과목 API를 추가 연동하여 추천 정확도를 개선할 예정입니다
+---
+
+## 4️. AWS EC2 배포 실패
+
+### 문제
+
+Docker 컨테이너는 실행되었지만 외부에서 서비스에 접근할 수 없었습니다.
+
+### 원인
+
+EC2 Security Group의 인바운드 규칙과 Docker 포트 설정이 올바르게 적용되지 않았습니다.
+
+### 해결
+
+- Security Group 8081 포트 허용
+- Docker 포트 매핑 확인
+- 컨테이너 재실행
+
+### 결과
+
+- EC2 정상 배포
+- 외부 접속 가능
+- 운영 환경 구축 완료
+
+---
+
+## 5️. Docker 환경 변수 변경이 적용되지 않는 문제
+
+### 문제
+
+MySQL 비밀번호를 변경했지만 기존 비밀번호가 계속 유지되었습니다.
+
+### 원인
+
+Docker Volume에 기존 MySQL 데이터가 유지되고 있어 초기 환경 변수가 다시 적용되지 않았습니다.
+
+### 해결
+
+기존 Volume을 삭제하고 컨테이너를 다시 생성했습니다.
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+### 결과
+
+- 환경 변수 정상 적용
+- MySQL 초기화 완료
+- 컨테이너 재배포 성공
 
 ---
 # 🚀 배포 과정
@@ -317,6 +373,16 @@ docker compose up -d
 - 검색 자동완성
 
 ---
+
+# 📚 프로젝트를 통해 배운 점
+
+- Spring Boot 기반 REST API 설계 및 구현 경험
+- Spring Security와 JWT 인증 구조 이해
+- OpenAI API 및 HIRA Open API 연동 경험
+- JPA 기반 데이터베이스 설계 및 CRUD 구현
+- Docker Compose를 활용한 컨테이너 환경 구축
+- Docker Hub와 AWS EC2를 활용한 서비스 배포 경험
+- 운영 환경에서 발생하는 문제를 로그 분석을 통해 해결하는 경험
 
 # 👨‍💻 Developer
 
