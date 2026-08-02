@@ -20,7 +20,7 @@
 | 프로젝트명 | AI Healthcare |
 | 개발 기간 | 2026.06 ~ 2026.07 |
 | 개발 인원 | 1명 (개인 프로젝트) |
-| 담당 역할 | Full Stack Developer |
+| 담당 역할 | 백엔드·프론트엔드 설계 및 구현, 외부 API 연동, Docker 기반 배포 |
 | 주요 기능 | AI 증상 분석, 병원 추천, 즐겨찾기, AI 분석 이력, 마이페이지 |
 | 사용 API | OpenAI API, HIRA Open API |
 
@@ -34,20 +34,85 @@ HIRA 공공데이터를 활용하여 병원 정보를 조회할 수 있는 웹 �
 Spring Boot 기반 REST API를 직접 설계하고 React와 연동하여 서비스를 구현하였으며,
 JWT 기반 로그인과 사용자별 즐겨찾기, AI 분석 이력 기능을 제공합니다.
 
-또한 Docker Compose를 이용하여 Spring Boot와 MySQL 컨테이너 환경을 구성하고,
-Docker Hub와 AWS EC2를 활용하여 실제 서비스를 배포했습니다.
+또한 Docker Compose로 Spring Boot와 MySQL 컨테이너 환경을 구성하고,
+Docker Hub에 이미지를 등록한 후 AWS EC2에서 배포 과정을 진행했습니다.
 
 ---
 
 # 🛠 기술 스택
 
 | 분야 | 기술 |
-| ----|-----|
-|Backend| Spring Boot, Spring Security, JPA, JWT|
-|Frontend|React|
-|Database|MySQL|
-|Infra|Docker, Docker Compose, Docker Hub, AWS EC2|
-|API| OpenAI API, HIRA Open API|
+|------|------|
+| Backend | Java 17, Spring Boot, Spring Security, Spring Data JPA, JWT |
+| Frontend | React 19 |
+| Database | MySQL 8 |
+| Infra | Docker, Docker Compose, Docker Hub, AWS EC2 |
+| External API | OpenAI API, HIRA Open API |
+| Documentation | Swagger/OpenAPI |
+| Build | Gradle |
+
+---
+
+# 🔍 기술 선택 이유
+
+## Spring Boot
+
+회원, 병원, 즐겨찾기, AI 분석 이력처럼 도메인이 구분된 REST API를
+계층형 구조로 구현하기 위해 사용했습니다.
+
+Spring Security, JPA 등 프로젝트에 필요한 기능을 일관된 환경에서
+구성할 수 있다는 점도 고려했습니다.
+
+## Spring Security + JWT
+
+React와 Spring Boot가 분리된 구조에서 인증 상태를 처리하기 위해
+JWT 기반 인증을 적용했습니다.
+
+로그인 성공 시 토큰을 발급하고, 이후 요청마다 JWT 인증 필터가
+토큰을 검증하도록 구성했습니다. 이를 통해 인증 로직을 각
+컨트롤러에서 반복하지 않고 Spring Security 영역에서 처리했습니다.
+
+## JPA
+
+회원, 병원, 즐겨찾기, AI 분석 이력 간의 관계를 객체 중심으로
+관리하기 위해 사용했습니다.
+
+단순 CRUD뿐만 아니라 사용자별 즐겨찾기와 분석 이력을
+연관관계로 표현하고, Repository를 통해 데이터 접근 로직을
+분리했습니다.
+
+## MySQL
+
+회원 정보와 병원 정보, 즐겨찾기 및 분석 이력처럼 관계가 명확한
+데이터를 저장해야 했기 때문에 관계형 데이터베이스를 선택했습니다.
+
+또한 `ykiho`를 병원 식별값으로 사용하여 외부 API 데이터를
+내부 데이터와 연결하고 중복 저장을 방지했습니다.
+
+## HIRA Open API
+
+추천한 진료과와 연결되는 실제 병원 정보를 제공하기 위해
+공공데이터를 활용했습니다.
+
+외부 API를 화면 요청마다 직접 호출하지 않고 데이터를 내부 DB에
+저장한 후 검색하도록 구성하여, 검색 기능과 사용자 즐겨찾기 기능에서
+동일한 병원 데이터를 사용할 수 있도록 했습니다.
+
+## OpenAI API
+
+사용자가 입력한 비정형 증상 문장에서 관련 진료과를 도출하기 위해
+사용했습니다.
+
+응답 결과를 그대로 화면에 출력하지 않고 필요한 항목을 파싱하여
+진료과 추천과 병원 검색에 활용할 수 있는 형태로 변환했습니다.
+
+## Docker Compose
+
+개발 환경과 배포 환경에서 Spring Boot와 MySQL의 실행 조건을
+일관되게 유지하기 위해 사용했습니다.
+
+애플리케이션과 데이터베이스를 각각 컨테이너로 분리하고,
+환경 변수와 네트워크 설정을 Docker Compose에서 관리했습니다.
 
 ---
 
@@ -201,132 +266,84 @@ frontend
 
 ---
 
-# 🚨 Trouble Shooting
+# 🚨 문제 해결 과정
 
-## 1️. Spring Security 인증 코드 중복
-
-### 문제
-
-JWT 인증 로직이 여러 클래스에 분산되어 있어 유지보수가 어려웠습니다.
-
-### 원인
-
-인증 관련 로직이 공통화되지 않아 동일한 코드가 여러 곳에서 사용되고 있었습니다.
-
-### 해결
-
-공통 인증 로직을 분리하여 Spring Security 인증 구조를 개선했습니다.
-
-### 결과
-
-- 코드 중복 제거
-- 유지보수성 향상
-- 인증 로직 관리 효율성 개선
-
----
-
-## 2. OpenAI API Parsing 오류
+## 1. JWT 인증 로직을 필터로 분리
 
 ### 문제
 
-OpenAI API 응답을 처리하는 과정에서 JSON Parsing 예외가 발생했습니다.
+인증이 필요한 API마다 JWT에서 사용자 정보를 추출하는 로직을
+직접 작성하면서 컨트롤러와 서비스에 인증 코드가 반복되었습니다.
 
 ### 원인
 
-응답 데이터 구조가 상황에 따라 달라질 수 있었고 예외 처리가 부족했습니다.
+JWT 검증과 사용자 인증 정보 생성을 애플리케이션의 공통 인증
+단계에서 처리하지 않고 각 기능에서 개별적으로 처리하고 있었습니다.
 
 ### 해결
 
-응답 검증 로직과 예외 처리를 추가하여 다양한 응답에서도 정상적으로 동작하도록 개선했습니다.
+JWT 생성·검증 기능을 `JwtTokenProvider`로 분리하고,
+요청마다 토큰을 확인하는 JWT 인증 필터를 구현했습니다.
+
+검증에 성공한 사용자 정보는 `SecurityContext`에 저장하여
+컨트롤러가 토큰을 직접 해석하지 않도록 변경했습니다.
 
 ### 결과
 
-- Parsing 오류 해결
-- 서비스 안정성 향상
-- 예외 상황 대응 가능
+- 컨트롤러의 JWT 처리 코드 제거
+- 인증 방식 일원화
+- 인증이 필요한 API의 접근 제어를 Spring Security 설정으로 관리
 
----
-
-## 3️. Docker 환경에서 MySQL 연결 실패
+## 2. OpenAI 응답 파싱 실패 처리
 
 ### 문제
 
-Docker Compose 실행 후 Spring Boot가 MySQL에 연결되지 않았습니다.
-
-```text
-Communications link failure
-The driver has not received any packets from the server.
-```
+OpenAI 응답에서 예상한 JSON 형식이 아닌 문자열이나 Markdown 코드
+블록이 포함되면 JSON 파싱 예외가 발생하고 요청 전체가 500 오류로
+종료됐습니다.
 
 ### 원인
 
-Spring Boot가 MySQL보다 먼저 실행되어 DB 초기화가 완료되기 전에 연결을 시도했습니다.
-
-또한 환경 변수 설정이 정상적으로 반영되지 않았습니다.
+AI 응답이 항상 지정한 JSON 구조로 반환될 것이라고 가정하고
+응답 내용을 바로 역직렬화했습니다.
 
 ### 해결
 
-- Docker Compose 환경 변수 수정
-- DB Host를 컨테이너 이름(mysql)으로 변경
-- 컨테이너 재생성
-- 환경 변수 재적용
+응답 본문이 비어 있는지 먼저 검증하고, JSON 코드 블록이 포함된
+경우 불필요한 문자열을 제거한 후 DTO로 변환하도록 수정했습니다.
+
+파싱에 실패할 경우 공통 예외 처리기를 통해 정해진 오류 코드와
+메시지를 반환하도록 구성했습니다.
 
 ### 결과
 
-- Spring Boot와 MySQL 정상 연결
-- Docker 환경 안정화
-- 컨테이너 기반 개발 환경 구축
+- 비정상 응답에 대한 예외 처리 가능
+- 클라이언트에 일관된 오류 응답 제공
+- AI 응답 형식 문제와 서버 내부 오류 구분
 
----
-
-## 4️. AWS EC2 배포 실패
+## 3. HIRA 병원 데이터 중복 저장 방지
 
 ### 문제
 
-Docker 컨테이너는 실행되었지만 외부에서 서비스에 접근할 수 없었습니다.
+HIRA 데이터 동기화 API를 반복 호출하면 동일한 병원 정보가
+DB에 중복 저장될 가능성이 있었습니다.
 
 ### 원인
 
-EC2 Security Group의 인바운드 규칙과 Docker 포트 설정이 올바르게 적용되지 않았습니다.
+외부 API에서 받은 병원 데이터를 별도의 식별값 검증 없이
+저장하고 있었습니다.
 
 ### 해결
 
-- Security Group 8081 포트 허용
-- Docker 포트 매핑 확인
-- 컨테이너 재실행
+HIRA가 제공하는 병원 고유 식별값인 `ykiho`를 기준으로
+기존 데이터 존재 여부를 확인한 후 신규 병원만 저장하도록
+구현했습니다.
 
 ### 결과
 
-- EC2 정상 배포
-- 외부 접속 가능
-- 운영 환경 구축 완료
-
----
-
-## 5️. Docker 환경 변수 변경이 적용되지 않는 문제
-
-### 문제
-
-MySQL 비밀번호를 변경했지만 기존 비밀번호가 계속 유지되었습니다.
-
-### 원인
-
-Docker Volume에 기존 MySQL 데이터가 유지되고 있어 초기 환경 변수가 다시 적용되지 않았습니다.
-
-### 해결
-
-기존 Volume을 삭제하고 컨테이너를 다시 생성했습니다.
-
-```bash
-docker compose down -v
-docker compose up -d
-```
-
-### 결과
-
-- 환경 변수 정상 적용
-- MySQL 초기화 완료
-- 컨테이너 재배포 성공
+- 동기화 API 재호출 시 중복 데이터 생성 방지
+- 즐겨찾기와 병원 상세 조회에서 동일한 병원 식별값 사용
+- 외부 데이터와 내부 데이터의 연결 기준 확립
 
 ---
 # 🚀 배포 과정
@@ -360,7 +377,7 @@ docker compose up -d
 
 - Docker Compose 기반으로 Spring Boot와 MySQL 컨테이너 구성
 - Docker Hub 활용하여 이미지를 배포하고 EC2에서 Pull 방식으로 실행하도록 구성
-- AWS EC2 환경에서 배포를 진행, 현재 프리티어 자원 제약으로 인해 운영 환경 안정화 진행 중
+- Docker Compose로 Spring Boot와 MySQL 컨테이너 환경을 구성하고, Docker Hub에 이미지를 등록한 후 AWS EC2에서 배포 과정을 진행
 
 ---
 
