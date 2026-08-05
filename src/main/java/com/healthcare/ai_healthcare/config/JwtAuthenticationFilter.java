@@ -1,6 +1,6 @@
 package com.healthcare.ai_healthcare.config;
 
-import com.healthcare.ai_healthcare.repository.UserRepository;
+import com.healthcare.ai_healthcare.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
